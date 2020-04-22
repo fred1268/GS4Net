@@ -35,10 +35,9 @@ namespace GS4Net
 
       public static void GS(string[] args)
       {
-         IntPtr gs;
          lock (mutex)
          {
-            NewInstance(out gs, IntPtr.Zero);
+            NewInstance(out IntPtr gs, IntPtr.Zero);
             try
             {
                int result = InitWithArgs(gs, args.Length, args);
@@ -57,6 +56,6 @@ namespace GS4Net
       }
 
       // Ensure we do not reenter GS from another thread
-      private static object mutex = new object();
+      private static readonly object mutex = new object();
    }
 }

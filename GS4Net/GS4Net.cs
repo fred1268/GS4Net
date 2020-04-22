@@ -32,13 +32,15 @@ namespace GS4Net
          { "DEVICE", "png16m" }
       };
 
+      public static readonly string REMOVE = "-+REMOVE+-";
+
       // More information at: https://www.ghostscript.com/doc/9.52/Use.htm#Parameter_switches
       public static void Generate(string pdf, string img, Dictionary<string, string> dArgs, Dictionary<string, string> sArgs)
       {
          GSAPI.GS(CombineArgs(pdf, img, dArgs, sArgs));
       }
 
-      private static Dictionary<string, string> mergeDictionary(Dictionary<string, string> def,  Dictionary<string, string> dic)
+      private static Dictionary<string, string> MergeDictionary(Dictionary<string, string> def,  Dictionary<string, string> dic)
       {
          Dictionary<string, string> merged = new Dictionary<string, string>();
          foreach (string key in def.Keys)
@@ -51,7 +53,14 @@ namespace GS4Net
             {
                if (merged.ContainsKey(key))
                {
-                  merged[key] = dic[key];
+                  if (dic[key].Equals(REMOVE))
+                  {
+                     merged.Remove(key);
+                  }
+                  else
+                  {
+                     merged[key] = dic[key];
+                  }
                }
                else
                {
@@ -66,7 +75,7 @@ namespace GS4Net
       {
          List<string> gsArgs = new List<string>();
          // -d arguments
-         Dictionary<string, string> allArgs = mergeDictionary(DEFAULTDARGS, dArgs);
+         Dictionary<string, string> allArgs = MergeDictionary(DEFAULTDARGS, dArgs);
          foreach (string key in allArgs.Keys)
          {
             if (allArgs[key].Length == 0)
@@ -79,7 +88,7 @@ namespace GS4Net
             }
          }
          // -s arguments
-         allArgs = mergeDictionary(DEFAULTSARGS, sArgs);
+         allArgs = MergeDictionary(DEFAULTSARGS, sArgs);
          if (img != null && img.Length != 0)
          {
             allArgs["OutputFile"] = img;
