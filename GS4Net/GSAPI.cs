@@ -5,42 +5,40 @@ namespace GS4Net
 {
    internal class GSAPI
    {
-#if WIN32
+      // WIN32
       [DllImport("gsdll32.dll", EntryPoint = "gsapi_new_instance")]
-      private static extern int NewInstance(out IntPtr pinstance, IntPtr caller_handle);
+      private static extern int NewInstance32(out IntPtr pinstance, IntPtr caller_handle);
 
       [DllImport("gsdll32.dll", EntryPoint = "gsapi_init_with_args")]
-      private static extern int InitWithArgs(IntPtr instance, int argc, string[] argv);
+      private static extern int InitWithArgs32(IntPtr instance, int argc, string[] argv);
 
       [DllImport("gsdll32.dll", EntryPoint = "gsapi_exit")]
-      private static extern int Exit(IntPtr instance);
+      private static extern int Exit32(IntPtr instance);
 
       [DllImport("gsdll32.dll", EntryPoint = "gsapi_delete_instance")]
-      private static extern void DeleteInstance(IntPtr instance);
-#endif
+      private static extern void DeleteInstance32(IntPtr instance);
 
-#if WIN64
+      // WIN64
       [DllImport("gsdll64.dll", EntryPoint = "gsapi_new_instance")]
-      private static extern int NewInstance(out IntPtr pinstance, IntPtr caller_handle);
+      private static extern int NewInstance64(out IntPtr pinstance, IntPtr caller_handle);
 
       [DllImport("gsdll64.dll", EntryPoint = "gsapi_init_with_args")]
-      private static extern int InitWithArgs(IntPtr instance, int argc, string[] argv);
+      private static extern int InitWithArgs64(IntPtr instance, int argc, string[] argv);
 
       [DllImport("gsdll64.dll", EntryPoint = "gsapi_exit")]
-      private static extern int Exit(IntPtr instance);
+      private static extern int Exit64(IntPtr instance);
 
       [DllImport("gsdll64.dll", EntryPoint = "gsapi_delete_instance")]
-      private static extern void DeleteInstance(IntPtr instance);
-#endif
+      private static extern void DeleteInstance64(IntPtr instance);
 
-      public static void GS(string[] args)
+      public static void GS32(string[] args)
       {
          lock (mutex)
          {
-            NewInstance(out IntPtr gs, IntPtr.Zero);
+            NewInstance32(out IntPtr gs, IntPtr.Zero);
             try
             {
-               int result = InitWithArgs(gs, args.Length, args);
+               int result = InitWithArgs32(gs, args.Length, args);
 
                if (result < 0)
                {
@@ -49,8 +47,30 @@ namespace GS4Net
             }
             finally
             {
-               Exit(gs);
-               DeleteInstance(gs);
+               Exit32(gs);
+               DeleteInstance32(gs);
+            }
+         }
+      }
+
+      public static void GS64(string[] args)
+      {
+         lock (mutex)
+         {
+            NewInstance64(out IntPtr gs, IntPtr.Zero);
+            try
+            {
+               int result = InitWithArgs64(gs, args.Length, args);
+
+               if (result < 0)
+               {
+                  throw new ExternalException(String.Format("Ghostscript conversion error {0}: result may be incorrect", result), result);
+               }
+            }
+            finally
+            {
+               Exit64(gs);
+               DeleteInstance64(gs);
             }
          }
       }

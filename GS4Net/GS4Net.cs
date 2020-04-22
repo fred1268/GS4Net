@@ -35,9 +35,23 @@ namespace GS4Net
       public static readonly string REMOVE = "-+REMOVE+-";
 
       // More information at: https://www.ghostscript.com/doc/9.52/Use.htm#Parameter_switches
+      public static void Generate32(string pdf, string img, Dictionary<string, string> dArgs, Dictionary<string, string> sArgs)
+      {
+         GSAPI.GS32(CombineArgs(pdf, img, dArgs, sArgs));
+      }
+
+      public static void Generate64(string pdf, string img, Dictionary<string, string> dArgs, Dictionary<string, string> sArgs)
+      {
+         GSAPI.GS64(CombineArgs(pdf, img, dArgs, sArgs));
+      }
+
       public static void Generate(string pdf, string img, Dictionary<string, string> dArgs, Dictionary<string, string> sArgs)
       {
-         GSAPI.GS(CombineArgs(pdf, img, dArgs, sArgs));
+#if X86
+         GSAPI.GS32(CombineArgs(pdf, img, dArgs, sArgs));
+#elif X64
+         GSAPI.GS64(CombineArgs(pdf, img, dArgs, sArgs));
+#endif
       }
 
       private static Dictionary<string, string> MergeDictionary(Dictionary<string, string> def,  Dictionary<string, string> dic)

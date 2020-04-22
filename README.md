@@ -45,7 +45,8 @@ dArgs.Add("DEVICEYRESOLUTION", "300");
 dArgs.Add("COLORSCREEN", "false");
 Dictionary<string, string> sArgs = new Dictionary<string, string>();
 sArgs.Add("PAPERSIZE", "A4");
-GS4Net.GS4Net.Generate("document.pdf", "thumb.png", dArgs, sArgs);
+// Use Generate32 or Generate64 depending on your architecture
+GS4Net.GS4Net.Generate32("document.pdf", "thumb.png", dArgs, sArgs);
 ```
 
 This overrides the DPI for both X and Y, as well as the paper size and thumbnail name. Also, it uses Black & White for PNG output.
